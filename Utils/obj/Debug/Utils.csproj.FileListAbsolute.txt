@@ -1,0 +1,10 @@
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\obj\Debug\Utils.csprojResolveAssemblyReference.cache
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\codegen.dll
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\codegen.windows.exe
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\ffmpeg.exe
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\Utils.dll
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\Utils.pdb
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\obj\Debug\Utils.dll
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\obj\Debug\Utils.pdb
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\HtmlAgilityPack.dll
+C:\Vikesh\Development\apps\lexy\Lexy\Utils\bin\Debug\taglib-sharp.dll
