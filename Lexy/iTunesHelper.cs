@@ -24,8 +24,6 @@ namespace SixPackApps.Lexy
             return "Lyrics fetched: " + DateTime.Now.ToShortTimeString();
         }
 
-
-
         internal static ObservableCollection<Song> GetLibrary()
         {
             iTunesAppClass itunes = new iTunesAppClass();
@@ -49,11 +47,6 @@ namespace SixPackApps.Lexy
                 if(song.IsLyricsMissing)
                 {
                     song.LyricsStatus = LYRICS_MISSING;
-                }
-
-                if (songs.Count > 500)
-                {
-                    break;
                 }
 
                 songs.Add(song);

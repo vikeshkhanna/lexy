@@ -18,8 +18,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Library</Label>
-            <DataGrid x:Name="SongsDataGrid" IsEnabled="{Binding IsFetching, Converter={StaticResource BoolInverter}}" 
-                      SelectionUnit="FullRow" Grid.Row="1" ItemsSource="{Binding Songs}" AutoGenerateColumns="False" SelectionChanged="DataGrid_SelectionChanged_1" >
+            <DataGrid x:Name="SongsDataGrid" SelectionUnit="FullRow" Grid.Row="1" ItemsSource="{Binding Songs}" AutoGenerateColumns="False" SelectionChanged="DataGrid_SelectionChanged_1" >
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Title" Width="SizeToCells" IsReadOnly="True" SortMemberPath="Title">
                         <DataGridTemplateColumn.CellTemplate>
