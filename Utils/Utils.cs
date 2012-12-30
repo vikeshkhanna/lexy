@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
 
-namespace SixPackApps.Lexy
+namespace SixPackApps.Lexy.Utils
 {
     public static class Utils
     {
@@ -40,7 +40,7 @@ namespace SixPackApps.Lexy
            
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = path;
-            startInfo.Arguments = songPath + " 0 40";
+            startInfo.Arguments = String.Format("\"{0}\" 0 40", songPath);
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.CreateNoWindow = true;
@@ -63,10 +63,10 @@ namespace SixPackApps.Lexy
             return identifyResponse;
         }
 
-        private static WikiaResponse GetLyricsWikia(IdentifySong song)
+        private static WikiaResponse GetLyricsWikia(string title, string artist_name)
         {
             string wikia_base = "http://lyrics.wikia.com/api.php";
-            string wikiaUrl = String.Format("{0}?artist={1}&song={2}&fmt=json", wikia_base, song.artist_name, song.title);
+            string wikiaUrl = String.Format("{0}?artist={1}&song={2}&fmt=json", wikia_base, artist_name, title);
 
             string wikiaJson = Utils.HttpGet(wikiaUrl);
             WikiaResponse wikiaResponse = new JavaScriptSerializer().Deserialize<WikiaResponse>(wikiaJson.Split(new char[] { '=' })[1]);
@@ -94,7 +94,7 @@ namespace SixPackApps.Lexy
             return lyrics;
         }
 
-        public static string GetLyrics(string songPath)
+        public static string GetLyricsFingerprint(string songPath)
         {
             FingerprintResponse fingerprintResponse;
             IdentifyResponse identifyResponse;
@@ -113,14 +113,55 @@ namespace SixPackApps.Lexy
                 throw new SongNotIdentifiedException(Utils.SongNotIdentifiedException);
             }
 
-            WikiaResponse wikiaResponse = GetLyricsWikia(identifyResponse.response.songs[0]);
+            IdentifySong song = identifyResponse.response.songs[0];
+            WikiaResponse wikiaResponse = GetLyricsWikia(song.title, song.artist_name);
             return ExtractLyricsFromWikia(wikiaResponse);
+        }
+
+        public static string GetLyricsId3(string title, string artist_name)
+        {
+            WikiaResponse wikiaResponse = GetLyricsWikia(title, artist_name);
+            return ExtractLyricsFromWikia(wikiaResponse);
+        }
+
+        public static string GetLyrics(string songPath, string title, string artist_name)
+        {
+            string lyrics;
+            Exception exception;
+
+            try
+            {
+               lyrics = GetLyricsFingerprint(songPath);
+               return lyrics;
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (!String.IsNullOrEmpty(title) && !String.IsNullOrEmpty(artist_name))
+            {
+                try
+                {
+                    lyrics = GetLyricsId3(title, artist_name);
+                    return lyrics;
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+            }
+
+            throw exception;
         }
     }
 
     public class Song
     {
         public string SongPath { get; set; }
+        public string Title { get; set; }
+        public string ArtistName { get; set; }
+
         private TagLib.File tagFile;
 
         public Song(string songPath)
@@ -129,6 +170,11 @@ namespace SixPackApps.Lexy
             this.tagFile = TagLib.File.Create(this.SongPath);
         }
 
+        public Song(string songPath, string title, string artistName) : this(songPath)
+        {
+            this.Title = title;
+            this.ArtistName = artistName;
+        }
         /// <summary>
         /// Add lyrics to the song given the lyrics string
         /// </summary>
@@ -144,7 +190,7 @@ namespace SixPackApps.Lexy
         /// </summary>
         public void AddLyrics()
         {
-            this.tagFile.Tag.Lyrics = LyricsHelper.GetLyrics(this.SongPath);
+            this.tagFile.Tag.Lyrics = LyricsHelper.GetLyrics(this.SongPath, this.Title, this.ArtistName);
             this.tagFile.Save();
         }
     }

@@ -1,8 +1,80 @@
-﻿<Window x:Class="Lexy.MainWindow"
+﻿<Window x:Class="SixPackApps.Lexy.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        Title="Lexy" Height="Auto" Width="Auto" Loaded="Window_Loaded">
+    <Grid VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="300" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="350" />
+        </Grid.ColumnDefinitions>
+   
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Library</Label>
+            <DataGrid x:Name="SongsDataGrid" IsEnabled="{Binding IsFetching, Converter={StaticResource BoolInverter}}" 
+                      SelectionUnit="FullRow" Grid.Row="1" ItemsSource="{Binding Songs}" AutoGenerateColumns="False" SelectionChanged="DataGrid_SelectionChanged_1" >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Title" Width="SizeToCells" IsReadOnly="True" SortMemberPath="Title">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Title}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Artist" Width="SizeToCells" IsReadOnly="True" SortMemberPath="Artist">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Artist}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Lyrics Status" Width="SizeToCells" IsReadOnly="True" SortMemberPath="LyricsStatus">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LyricsStatus}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
         
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+            <Button x:Name="GetLyricsButton" IsEnabled="{Binding IsFetching, Converter={StaticResource BoolInverter}}" Click="GetLyricsButton_Click_1"
+                    HorizontalAlignment="Left" Style="{StaticResource MetroButton}" Margin="15" Width="Auto" Content="Get Lyrics"/>
+            <Button x:Name="AddLyricsButton" IsEnabled="{Binding IsFetching, Converter={StaticResource BoolInverter}}" Click="AddLyricsButton_Click_1"
+                    HorizontalAlignment="Left" Style="{StaticResource MetroButton}" Margin="15" Width="Auto" Content="Add Lyrics"/>
+            <StackPanel>
+                <CheckBox Checked="SelectAllCheckBox_Checked_1" x:Name="SelectAllCheckBox" Cursor="Hand"  Style="{StaticResource MetroCheckBoxStyle}">Select All</CheckBox>
+                <CheckBox Checked="SelectMissingCheckBox_Checked_1"  x:Name="SelectMissingCheckBox" Cursor="Hand"  Style="{StaticResource MetroCheckBoxStyle}">Select Missing</CheckBox>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- Lyrics -->
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Lyrics</Label>
+            <ScrollViewer Grid.Row="1">
+                <TextBox IsEnabled="{Binding IsMultiSelect, Converter={StaticResource BoolInverter}}" Text="{Binding CurrentLyrics, Mode=TwoWay}" TextWrapping="Wrap" Height="Auto"
+                     Background="Black" Foreground="White" ScrollViewer.CanContentScroll="True" AcceptsReturn="True" />
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" IsEnabled="{Binding IsFetching, Converter={StaticResource BoolInverter}}" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}" Content="{Binding FetchStatus}"></Label>
+        </Grid>
     </Grid>
 </Window>
